@@ -23,8 +23,14 @@ class QuestionViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.C
     serializer_class = QuestionSerializer
     permission_classes = [IsOwnerOrReadOnly]
 
+
 class AnswerViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.CreateModelMixin,
                       mixins.UpdateModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet):
     queryset = Answer.objects.all()
     serializer_class = AnswerSerializer
     permission_classes = [IsOwnerOrReadOnly]
+
+    def perform_create(self, serializer):
+        question_id = self.request.data.get('question')
+        question = Question.objects.get(id=question_id)
+        serializer.save(question=question)
