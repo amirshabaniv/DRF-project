@@ -72,9 +72,22 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response("Successfully generate new OTP.", status=status.HTTP_200_OK)
 
 
-class ProfileViewSet(RetrieveModelMixin, UpdateModelMixin, viewsets.GenericViewSet):
+class ProfileViewSet(viewsets.GenericViewSet):
+    queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
-    queryset = UserProfile.objects.all()
-    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+
+    @action(detail=False, methods=['get'])
+    def my_profile(self, request):
+        profile = self.request.user.profile
+        serializer = self.get_serializer(profile)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['patch'])
+    def update_my_profile(self, request):
+        profile = self.request.user.profile
+        serializer = self.get_serializer(profile, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
 
