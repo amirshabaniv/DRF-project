@@ -75,6 +75,7 @@ class UserViewSet(viewsets.ModelViewSet):
 class ProfileViewSet(viewsets.GenericViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticated, IsOwenerOrReadOnly]
 
     @action(detail=False, methods=['get'])
     def my_profile(self, request):
