@@ -77,13 +77,13 @@ class ProfileViewSet(viewsets.GenericViewSet):
     serializer_class = ProfileSerializer
     permission_classes = [IsAuthenticated, IsOwenerOrReadOnly]
 
-    @action(detail=False, methods=['get'])
+    @action(detail=True, methods=['get'])
     def my_profile(self, request):
         profile = self.request.user.profile
         serializer = self.get_serializer(profile)
         return Response(serializer.data)
 
-    @action(detail=False, methods=['patch'])
+    @action(detail=True, methods=['patch'])
     def update_my_profile(self, request):
         profile = self.request.user.profile
         serializer = self.get_serializer(profile, data=request.data, partial=True)
