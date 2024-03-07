@@ -15,7 +15,7 @@ class HomeViewSet(ListModelMixin, viewsets.GenericViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
-    def list(self, request, *args, **kwargs):
+    def list(self, request, *args, **kwargs):
         latest_category1_products = self.queryset.filter(category__name='category1').order_by('-created')[:3]
         latest_category2_products = self.queryset.filter(category__name='category2').order_by('-created')[:3]
         latest_news = News.objects.all().order_by('-created')[:3]
