@@ -5,6 +5,7 @@ from .models import Learning, LearningCategory, Question, Answer
 from .serializers import LearningSerializer, LearningCategorySerializer, QuestionSerializer, AnswerSerializer
 
 from .permissions import IsOwnerOrReadOnly
+from rest_framework.permissions import IsAuthenticated
 
 
 class LearningViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
@@ -32,7 +33,13 @@ class AnswerViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.Cre
                       mixins.UpdateModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet):
     queryset = Answer.objects.all()
     serializer_class = AnswerSerializer
-    permission_classes = [IsOwnerOrReadOnly]
+
+    def get_permissions(self):
+        if self.action == 'create':
+            return [IsAuthenticated()]
+        elif self.action in ['update', 'destroy']:
+            return [IsAuthenticated(), IsOwnerOrReadOnly()]
+        return []
 
     def perform_create(self, serializer):
         question_id = self.request.data.get('question')
