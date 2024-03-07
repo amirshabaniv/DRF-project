@@ -36,20 +36,18 @@ class HomeViewSet(ListModelMixin, viewsets.GenericViewSet):
 class ProductViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
-    
-    @action(detail=True, methods=['get'])
-    def add_view(self, request, *args, **kwargs):
+
+    def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
-        
+
         cache_key = f'product_{instance.id}_views'
-        views = cache.get(cache_key, 0) + 1
-        cache.set(cache_key, views)
-
-        instance.views_count = views
-        instance.save()
+        views = cache.get(cache_key, 0)
+        
         serializer = self.get_serializer(instance)
-
-        return Response(serializer.data)
+        data = serializer.data
+        data['views_count'] = views
+        
+        return Response(data)
 
 
 class CategoryViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
