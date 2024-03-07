@@ -8,27 +8,29 @@ from news.models import News
 from news.serializers import NewsSerializer
 
 
-class HomeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+from rest_framework import viewsets
+from rest_framework.mixins import ListModelMixin
 
-    @action(detail=False, methods=['get'])
-    def homepage(self, request):
-        latest_category1_products = self.queryset.filter(category__name='category1').order_by('-created')[:3]
-        latest_category2_products = self.queryset.filter(category__name='category2').order_by('-created')[:3]
-        latest_news = News.objects.all().order_by('-created')[:3]
+class HomeViewSet(ListModelMixin, viewsets.GenericViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
 
-        serializer_category1 = self.get_serializer(latest_category1_products, many=True)
-        serializer_category2 = self.get_serializer(latest_category2_products, many=True)
-        serializer_news = NewsSerializer(latest_news, many=True)
+    def list(self, request, *args, **kwargs):
+        latest_category1_products = self.queryset.filter(category__name='category1').order_by('-created')[:3]
+        latest_category2_products = self.queryset.filter(category__name='category2').order_by('-created')[:3]
+        latest_news = News.objects.all().order_by('-created')[:3]
 
-        data = {
-            'latest_category1_products': serializer_category1.data,
-            'latest_category2_products': serializer_category2.data,
-            'latest_news': serializer_news.data
-        }
+        serializer_category1 = self.get_serializer(latest_category1_products, many=True)
+        serializer_category2 = self.get_serializer(latest_category2_products, many=True)
+        serializer_news = NewsSerializer(latest_news, many=True)
 
-        return Response(data)
+        data = {
+            'latest_category1_products': serializer_category1.data,
+            'latest_category2_products': serializer_category2.data,
+            'latest_news': serializer_news.data
+        }
+
+        return Response(data)
     
 
 class ProductViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
