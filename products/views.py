@@ -41,11 +41,12 @@ class ProductViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.
         instance = self.get_object()
 
         cache_key = f'product_{instance.id}_views'
-        views = cache.get(cache_key, 0)
+        views = cache.get(cache_key, 0) + 1
+        cache.set(cache_key, views)
         
-        serializer = self.get_serializer(instance)
-        data = serializer.data
-        data['views_count'] = views
+        instance.views_count = views
+        instance.save()
+        data = self.get_serializer(instance).data
         
         return Response(data)
 
