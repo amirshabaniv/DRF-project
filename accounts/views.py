@@ -73,10 +73,10 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class ProfileViewSet(RetrieveModelMixin, UpdateModelMixin, viewsets.GenericViewSet):
-    queryset = Profile.objects.all()
-    serializer_class = ProfileSerializer
-    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
-
-    def get_object(self):
-        return self.request.user.profile
+    queryset = UserProfile.objects.all()
+    serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+    
+    def get_object(self):
+        return self.request.user.profile
 
