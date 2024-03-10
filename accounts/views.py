@@ -77,6 +77,18 @@ class ProfileViewSet(RetrieveModelMixin, UpdateModelMixin, viewsets.GenericViewS
     serializer_class = ProfileSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     
-    def get_object(self):
-        return self.request.user.profile
+    @action(detail=False, methods=['get', 'patch'])
+    def my_profile(self, request):
+
+        if request.method == 'GET':
+            profile = request.user.profile
+            serializer = self.get_serializer(profile)
+            return Response(serializer.data)
+        
+        elif request.method == 'PATCH':
+            profile = request.user.profile
+            serializer = self.get_serializer(instance=profile, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data)
 
