@@ -72,7 +72,7 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response("Successfully generate new OTP.", status=status.HTTP_200_OK)
 
 
-class ProfileViewSet(RetrieveModelMixin, UpdateModelMixin, viewsets.GenericViewSet):
+class ProfileViewSet(viewsets.GenericViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = ProfileSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
