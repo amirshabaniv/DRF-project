@@ -24,6 +24,13 @@ class QuestionViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.C
     serializer_class = QuestionSerializer
     permission_classes = [IsOwnerOrReadOnly]
 
+    def get_permissions(self):
+        if self.action == 'create':
+            return [IsAuthenticated()]
+        elif self.action in ['update', 'destroy']:
+            return [IsAuthenticated(), IsOwnerOrReadOnly()]
+        return []
+
     def perform_create(self, serializer):
         user = User.objects.get(id=self.request.user.id)
         serializer.save(user=user)
