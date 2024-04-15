@@ -17,7 +17,7 @@ class DownloadForCategorySerializer(serializers.ModelSerializer):
 
 
 class DownloadCategorySerializer(serializers.ModelSerializer):
-    news = DownloadForCategorySerializer(many=True)
+    downloads = DownloadForCategorySerializer(many=True)
 
     class Meta:
         model = DownloadCategory
