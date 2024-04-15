@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from .models import Download
-from products.models import Category
+from .models import Download, DownloadCategory
 
 
 class DownloadSerialzier(serializers.ModelSerializer):
@@ -21,5 +20,5 @@ class DownloadCategorySerializer(serializers.ModelSerializer):
     downloads = DownloadForCategorySerializer(many=True)
 
     class Meta:
-        model = Category
+        model = DownloadCategory
         fields = ['id', 'name', 'downloads']
