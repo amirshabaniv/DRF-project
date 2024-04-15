@@ -12,6 +12,7 @@ class LearningCategory(models.Model):
     def __str__(self):
         return self.name
 
+
 class Learning(models.Model):
     description = models.TextField(null=True, blank=True)
     title = models.CharField(max_length=50)
